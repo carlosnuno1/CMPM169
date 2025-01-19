@@ -5,6 +5,10 @@ h1, h2 {
   font-weight: lighter;
 }
 
+body {
+  background-color: black;
+}
+
 #content {
   width: calc(100% - 30px);
   margin: 10px;080;
