@@ -6,34 +6,94 @@ h1, h2 {
 }
 
 body {
-  background-color: black;
-  color: white;
+  background-image: url('./img/background.jpg');
+  background-color: rgb(0, 0, 0);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgb(0, 0, 0);
 }
 
 #content {
   width: calc(100% - 30px);
-  margin: 10px;080;
+  margin: 10px; 080;
   padding: 10px;
-  border: solid 1px #808;
-  font-family: sans-serif;
-  background-color: black;
+  /* border: solid 1px #808;= */
+  font-family: "Love Light", serif;
 }
 
-.minor-section {
-  margin: 10px;
-  padding: 10px;
-  border: solid 1px #A0A0A0;
+h1, h2, p {
+  color: white;
+  font-family: "Love Light", serif;
+}
+
+/* Add specific sizes for each element */
+h1 {
+  font-size: 4em;    /* Larger size for main headings */
+}
+
+h2 {
+  font-size: 1.8em;    /* Medium size for subheadings */
+  color: black;
+}
+
+p {
+  font-size: 1.2em;    /* Base size for paragraphs */
+  color: black;
+}
+
+.minor-section-1{
+  background-image: url('./img/gang.jpg');
+  background-color: rgb(0, 0, 0);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Size controls */
+  width: 80%;                /* Controls width - try percentages or specific pixels */
+  max-width: 700px;         /* Prevents section from getting too wide */
+  min-height: 400px;        /* Minimum height - adjust as needed */
+  
+  /* Spacing controls */
+  margin: 20px auto;        /* Centers the section horizontally with auto */
+  padding: 20px;           /* Internal spacing - increase for more inner space */
+  
+  border: solid 1px #ffffff;
+  border-radius: 10px;
+}
+
+.minor-section-2{
+  background-image: url('./img/sky.jpg');
+  background-color: rgb(0, 0, 0);
+  background-size: 100% 132%;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Size controls */
+  width: 80%;                /* Controls width - try percentages or specific pixels */
+  max-width: 100px;         /* Prevents section from getting too wide */
+  min-height: 100px;        /* Minimum height - adjust as needed */
+  
+  /* Spacing controls */
+  margin: 200px auto;        /* Centers the section horizontally with auto */
+  padding: 150px;           /* Internal spacing - increase for more inner space */
+  
+  border: solid 1px #ffffff;
   border-radius: 10px;
 }
 
 .minor-section h2 {
   font-size: 1.2em;
+  
 }
 
 /* Set the image to be responsive */
 .image-wrapper img {
-  max-width: 100%;
+  max-width: 40%;
   height: auto;
+  position: relative;
+  left: 20px;
+  top: 10px;
 }
 
 /* Set the canvas element to be the full size of the container */
