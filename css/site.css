@@ -20,26 +20,38 @@ body {
   padding: 10px;
   /* border: solid 1px #808;= */
   font-family: "Love Light", serif;
+  font-family: "Jacques Francois Shadow", serif;  
 }
 
 h1, h2, p {
-  color: white;
-  font-family: "Love Light", serif;
+  color: rgb(255, 255, 255);
 }
 
 /* Add specific sizes for each element */
 h1 {
+  font-family: "Love Light", serif;
   font-size: 4em;    /* Larger size for main headings */
 }
 
 h2 {
-  font-size: 1.8em;    /* Medium size for subheadings */
-  color: black;
+  font-family: "Jacques Francois Shadow", serif;
+  font-size: 2em;    /* Medium size for subheadings */
+  color: rgb(0, 0, 0);
+}
+
+h3 {
+  font-family: "Jacques Francois Shadow", serif;
+  font-size: 2em;    /* Medium size for subheadings */
+  color: rgb(255, 255, 255);
+  text-align: right;
+  margin-left: 10px;
+  padding-top: 10px;
 }
 
 p {
+    font-family: "Jacques Francois Shadow", serif;
   font-size: 1.2em;    /* Base size for paragraphs */
-  color: black;
+  color: rgb(0, 0, 0);
 }
 
 .minor-section-1{
