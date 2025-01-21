@@ -24,7 +24,7 @@ body {
 }
 
 h1, h2, p {
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 }
 
 /* Add specific sizes for each element */
@@ -51,7 +51,7 @@ h3 {
 p {
     font-family: "Jacques Francois Shadow", serif;
   font-size: 1.2em;    /* Base size for paragraphs */
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 }
 
 .minor-section-1{
