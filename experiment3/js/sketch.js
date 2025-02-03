@@ -14,6 +14,13 @@ const VALUE2 = 2;
 let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
+let mic;
+let fft;  // Add this line for frequency analysis
+let rectangles = [];
+let triangles = [];
+let circles = [];
+const MAX_SHAPES = 3;  // Maximum number of each shape type
+const LIFETIME = 500; // 500 milliseconds = 0.5 seconds
 
 class MyClass {
     constructor(param1, param2) {
@@ -42,6 +49,7 @@ function setup() {
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
 
+
   // create an instance of the class
   myInstance = new MyClass("VALUE1", "VALUE2");
 
@@ -49,31 +57,88 @@ function setup() {
     resizeScreen();
   });
   resizeScreen();
+
+  mic = new p5.AudioIn();
+  fft = new p5.FFT();  // Create FFT analyzer
+  mic.start();
+  fft.setInput(mic);   // Connect mic to FFT
+  stroke(255);
+  background(0);
+
+  rectMode(CENTER);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
-
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
-}
-
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+  let vol = mic.getLevel();
+  let spectrum = fft.analyze();
+  
+  let bass = fft.getEnergy("bass");
+  let mid = fft.getEnergy("mid");
+  let treble = fft.getEnergy("treble");
+  
+  background(0);
+  
+  let size = map(vol, 0, .2, 10, .8);
+  var m = map(mouseX, 0, width, 100, 255);
+  fill(m, 20);
+  
+  let currentTime = millis(); // Get current time
+  
+  // Add new shapes based on frequency with timestamp
+  if (bass > 210) {
+    rectangles.push({
+      x: width / 2,
+      y: 300,
+      size: size * bass/2.6,
+      timestamp: currentTime
+    });
+  } 
+  if (treble > 60) {
+    triangles.push({
+      x: width / 2,
+      y: 300,
+      size: size * treble/1.3,
+      timestamp: currentTime
+    });
+  } 
+  if (mid > 100) {
+    circles.push({
+      x: width / 2,
+      y: 300,
+      size: size * mid/2.7,
+      timestamp: currentTime
+    });
+  }
+  
+  // Remove old shapes
+  rectangles = rectangles.filter(r => currentTime - r.timestamp < LIFETIME);
+  triangles = triangles.filter(t => currentTime - t.timestamp < LIFETIME);
+  circles = circles.filter(c => currentTime - c.timestamp < LIFETIME);
+  
+  // Limit arrays to MAX_SHAPES
+  if (rectangles.length > MAX_SHAPES) rectangles.shift();
+  if (triangles.length > MAX_SHAPES) triangles.shift();
+  if (circles.length > MAX_SHAPES) circles.shift();
+  
+  // Draw rectangles
+  rectangles.forEach(r => {
+    rectMode(CENTER);
+    rect(r.x, r.y, r.size, r.size);
+  });
+  
+  // Draw triangles
+  triangles.forEach(t => {
+    triangle(
+      t.x, t.y - t.size/2,
+      t.x - t.size/2, t.y + t.size/2,
+      t.x + t.size/2, t.y + t.size/2
+    );
+  });
+  
+  // Draw circles
+  circles.forEach(c => {
+    ellipse(c.x, c.y, c.size, c.size);
+    ellipse(c.x, c.y, c.size/5, c.size/5);
+  }); 
 }

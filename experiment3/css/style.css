@@ -6,6 +6,11 @@ canvas {
     height: 100%;
 }
 
+h1{ 
+    font-family: "Love Light", serif;
+    font-size: 4em;
+}
+
 /* Center the canvas element on the page */
 body {
     display: flex;

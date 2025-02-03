@@ -19,7 +19,10 @@
         crossorigin="anonymous"></script>
 	<!-- Load p5.js library -->
 	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
-
+	<!-- Load p5.sound library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Love+Light&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<!-- Link to javascript files - DEFER waits until all elements are rendered -->
     <script type="text/javascript" src="../js/site.js" DEFER></script>
 	<!-- Use me for a JavaScript OOP Project -->
@@ -32,7 +35,7 @@
 	<main id="content">
 		<section>
 
-			<h1>Experiment X - Subject/Topic</h1>
+			<h1>Experiment 3 - Audio Visualizer</h1>
 
 			<div class="minor-section">
 				<div id="canvas-container">
@@ -45,17 +48,21 @@
 
 			<div class="minor-section">
 				<h2>Description</h2>
-				<p>What are you trying to acomplish with this experiment?</p>
+				<p>Needed to make something generative but I didn't like the randoms and algorithm aspect of generative methods so I decided to make an audio visualizer.</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+				<p>Started by getting the mic input working and setting the volume to change the size of a circle. From there I made it so only three circles max could be on screen. I also added a button to toggle fullscreen mode.</p>
+				<p>I also made it so circles would disappear after a certain amount of time. From there I added a triangle and square. Was those were on the screen I made it so each shape had their frequency they were following</p>
+				<p>Triangle for highs, circle for mids, and square for lows. They are also all independt of each other for their size meaning the higher of its own frequency, the larger it would be without affecting the other shapes.</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Reflection</h2>
-				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment.</p>
+				<p>Honestly I had lower expectations for this experiment that I was able to create. I've been thinking of this project for a while now I thought I would be limited more by js but it turns out I was able to make something I think it pretty cool.</p>
+				<p>There are still some shortcomings with the project especially the fact that their are limits to audio reactive stuff in terms of input devices and what a user wants to input. Some inputs may not produce something all that interesting. </p>
+				<p>Because of thisI've included a video using a setup and input that is more ideal for the program <a href="https://www.youtube.com/watch?v=vnNijib09kw&ab_channel=caruno127" target="_blank">here</a>.</p>
 			</div>
 
 		</section>
