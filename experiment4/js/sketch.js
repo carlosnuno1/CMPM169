@@ -19,8 +19,8 @@ let fft;  // Add this line for frequency analysis
 let rectangles = [];
 let triangles = [];
 let circles = [];
-const MAX_SHAPES = 3;  // Maximum number of each shape type
-const LIFETIME = 200; // 500 milliseconds = 0.5 seconds
+const MAX_SHAPES = 2;  // Maximum number of each shape type
+const LIFETIME = 35; // 500 milliseconds = 0.5 seconds
 let audioReady = false; // Add this flag to check if audio is ready
 
 class MyClass {
@@ -108,40 +108,82 @@ function draw() {
   
   try {
     let spectrum = fft.analyze();
-    let bass = fft.getEnergy("bass");
-    let mid = fft.getEnergy("mid");
-    let treble = fft.getEnergy("treble");
+    let lowBass = fft.getEnergy(20, 100);    // Lower bass frequencies
+    let highBass = fft.getEnergy(100, 200);  // Higher bass frequencies
+    let lowMid = fft.getEnergy(200, 800);    // Lower mid frequencies
+    let highMid = fft.getEnergy(800, 1500);  // Higher mid frequencies
+    let lowTreble = fft.getEnergy(1500, 3000); // Lower treble frequencies
+    let highTreble = fft.getEnergy(3000, 5000); // Higher treble frequencies
     
     background(0);
     
-    let shapeSize = map(bass, 0, 255, .1, 25); // Reduced minimum size for more dynamic range
     var m = map(mouseX, 0, width, 100, 255);
     fill(m, 20);
     
     let currentTime = millis();
     
-    if (bass > 130) { // Lowered threshold for more frequent triggers
+    // Bass shapes
+    if (lowBass > 130) {
       rectangles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * bass/8, // Increased division for more variation
-        timestamp: currentTime
+        size: map(lowBass, 0, 255, .1, 25) * lowBass/10,
+        timestamp: currentTime,
+        isLowBass: true
       });
-    } 
-    if (treble > 80) { // Lowered threshold
-      triangles.push({
+    }
+    if (highBass > 130) {
+      rectangles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * treble/4.4,
-        timestamp: currentTime
+        size: map(highBass, 0, 255, .1, 25) * highBass/10,
+        timestamp: currentTime,
+        isLowBass: false
+
       });
-    } 
-    if (mid > 40) { // Lowered threshold
+    }
+
+    // Mid shapes
+    if (lowMid > 40) {
       circles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * mid/8.8,
-        timestamp: currentTime
+        size: map(lowMid, 0, 255, .1, 25) * lowMid/10,
+        timestamp: currentTime,
+        intensity: lowMid,
+        isHighMid: false
+      });
+    }
+    if (highMid > 40) {
+      circles.push({
+        x: width / 2,
+        y: 300,
+        size: map(highMid, 0, 255, .1, 25) * highMid/10,
+        timestamp: currentTime,
+        intensity: highMid,
+        isHighMid: true
+      });
+    }
+
+    // Treble shapes
+    if (lowTreble > 80) {
+      triangles.push({
+        x: width / 2,
+        y: 300,
+        size: map(lowTreble, 0, 255, .1, 25) * lowTreble/8,
+        timestamp: currentTime,
+        intensity: lowTreble,
+        isHighTreble: false
+      });
+    }
+    if (highTreble > 80) {
+      triangles.push({
+        x: width / 2,
+        y: 300,
+        size: map(highTreble, 0, 255, .1, 25) * highTreble/8,
+        timestamp: currentTime,
+        intensity: highTreble,
+        isHighTreble: true
       });
     }
     
@@ -155,26 +197,70 @@ function draw() {
     if (triangles.length > MAX_SHAPES) triangles.shift();
     if (circles.length > MAX_SHAPES) circles.shift();
     
-    // Draw rectangles
+    // Draw bass shapes
     rectangles.forEach(r => {
-      rectMode(CENTER);
-      rect(r.x, r.y, r.size, r.size);
+      push();
+      if (r.isLowBass) {
+        // Hexagon for low bass
+        beginShape();
+        for (let i = 0; i < 6; i++) {
+          let angle = TWO_PI * i / 6;
+          let x = r.x + cos(angle) * r.size/2;
+          let y = r.y + sin(angle) * r.size/2;
+          vertex(x, y);
+        }
+        endShape(CLOSE);
+      } else {
+        // Square for high bass
+        rectMode(CENTER);
+        rect(r.x, r.y, r.size, r.size);
+      }
+      pop();
     });
     
-    // Draw triangles
+    // Draw mid shapes
+    circles.forEach(c => {
+      push();
+      if (c.isHighMid) {
+        // Simple circle for high mids
+        ellipse(c.x, c.y, c.size, c.size);
+      } else {
+        // Morphing circle for low mids
+        let points = floor(map(c.intensity, 40, 255, 20, 40));
+        beginShape();
+        for (let i = 0; i < points; i++) {
+          let angle = TWO_PI * i / points;
+          let radius = c.size/2;
+          let wave = sin(angle * 5) * (c.intensity / 255) * c.size/8;
+          let x = c.x + cos(angle) * (radius + wave);
+          let y = c.y + sin(angle) * (radius + wave);
+          vertex(x, y);
+        }
+        endShape(CLOSE);
+      }
+      pop();
+    });
+    
+    // Draw treble shapes
     triangles.forEach(t => {
-      triangle(
-        t.x, t.y - t.size/2,
+      push();
+      if (t.isHighTreble) {
+        // Upside down triangle for high treble
+        triangle(
+          t.x, t.y + t.size/2,
+          t.x - t.size/2, t.y - t.size/2,
+          t.x + t.size/2, t.y - t.size/2
+        );
+      } else {
+        // Normal triangle for low treble
+        triangle(
+          t.x, t.y - t.size/2,
           t.x - t.size/2, t.y + t.size/2,
           t.x + t.size/2, t.y + t.size/2
-      );
+        );
+      }
+      pop();
     });
-    
-    // Draw circles
-    circles.forEach(c => {
-      ellipse(c.x, c.y, c.size, c.size);
-      ellipse(c.x, c.y, c.size/5, c.size/5);
-    }); 
   } catch (err) {
     console.error('Error in draw loop:', err);
     audioReady = false;
