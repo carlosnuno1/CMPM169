@@ -20,7 +20,7 @@ let rectangles = [];
 let triangles = [];
 let circles = [];
 const MAX_SHAPES = 3;  // Maximum number of each shape type
-const LIFETIME = 500; // 500 milliseconds = 0.5 seconds
+const LIFETIME = 200; // 500 milliseconds = 0.5 seconds
 let audioReady = false; // Add this flag to check if audio is ready
 
 class MyClass {
@@ -44,6 +44,8 @@ function resizeScreen() {
 
 // setup() function is called once when the program starts
 async function setup() {
+  frameRate(60); // Set frame rate to 60fps
+  
   // place our canvas, making it fit our container
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
@@ -75,7 +77,7 @@ async function setup() {
     
     // Set up p5 audio analysis
     mic = new p5.AudioIn();
-    fft = new p5.FFT();
+    fft = new p5.FFT(0.4, 1024); // Smoothing of 0.8 (lower = more reactive) and 1024 frequency bands
     
     // Use p5.sound's audio context
     const audioContext = p5.prototype.getAudioContext();
@@ -83,6 +85,7 @@ async function setup() {
     
     // Connect the source to a gain node
     const gainNode = audioContext.createGain();
+    gainNode.gain.value = 1; // Increase gain to make it more sensitive
     source.connect(gainNode);
     
     // Connect to p5.sound's analyzer
@@ -101,46 +104,43 @@ async function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  if (!audioReady) return; // Skip drawing if audio isn't ready
+  if (!audioReady) return;
   
   try {
-    let vol = mic.getLevel();
     let spectrum = fft.analyze();
-    
     let bass = fft.getEnergy("bass");
     let mid = fft.getEnergy("mid");
     let treble = fft.getEnergy("treble");
     
     background(0);
     
-    let shapeSize = map(vol, 0, .2, 10, .8); // renamed from 'size' to 'shapeSize'
+    let shapeSize = map(bass, 0, 255, .1, 25); // Reduced minimum size for more dynamic range
     var m = map(mouseX, 0, width, 100, 255);
     fill(m, 20);
     
     let currentTime = millis();
     
-    // Update shape creation to use shapeSize instead of size
-    if (bass > 210) {
+    if (bass > 130) { // Lowered threshold for more frequent triggers
       rectangles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * bass/2.6,
+        size: shapeSize * bass/8, // Increased division for more variation
         timestamp: currentTime
       });
     } 
-    if (treble > 60) {
+    if (treble > 80) { // Lowered threshold
       triangles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * treble/1.3,
+        size: shapeSize * treble/4.4,
         timestamp: currentTime
       });
     } 
-    if (mid > 100) {
+    if (mid > 40) { // Lowered threshold
       circles.push({
         x: width / 2,
         y: 300,
-        size: shapeSize * mid/2.7,
+        size: shapeSize * mid/8.8,
         timestamp: currentTime
       });
     }
@@ -177,6 +177,6 @@ function draw() {
     }); 
   } catch (err) {
     console.error('Error in draw loop:', err);
-    audioReady = false; // Reset flag if we encounter an error
+    audioReady = false;
   }
 }
