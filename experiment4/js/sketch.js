@@ -77,19 +77,13 @@ async function setup() {
     
     // Set up p5 audio analysis
     mic = new p5.AudioIn();
-    fft = new p5.FFT(0.4, 1024); // Smoothing of 0.8 (lower = more reactive) and 1024 frequency bands
+    fft = new p5.FFT();
     
     // Use p5.sound's audio context
     const audioContext = p5.prototype.getAudioContext();
     const source = audioContext.createMediaStreamSource(stream);
     
-    // Connect the source to a gain node
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 1; // Increase gain to make it more sensitive
-    source.connect(gainNode);
-    
-    // Connect to p5.sound's analyzer
-    gainNode.connect(audioContext.destination);
+    // Just connect directly to the FFT
     fft.setInput(source);
     audioReady = true;
   } catch (err) {
