@@ -12,6 +12,9 @@ body {
     justify-content: center;
     align-items: center;
 }
+h2{
+    color: black;
+}
 
 #canvas-container {
     width: 100%;
