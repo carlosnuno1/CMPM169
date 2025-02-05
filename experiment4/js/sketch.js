@@ -22,6 +22,11 @@ let circles = [];
 const MAX_SHAPES = 2;  // Maximum number of each shape type
 const LIFETIME = 35; // 500 milliseconds = 0.5 seconds
 let audioReady = false; // Add this flag to check if audio is ready
+let startButton;
+let audioOutputButton;
+let audioSource;
+let audioContext;
+let isAudioMuted = true; // Track mute state
 
 class MyClass {
     constructor(param1, param2) {
@@ -44,7 +49,7 @@ function resizeScreen() {
 
 // setup() function is called once when the program starts
 async function setup() {
-  frameRate(60); // Set frame rate to 60fps
+  frameRate(60);
   
   // place our canvas, making it fit our container
   canvasContainer = $("#canvas-container");
@@ -59,11 +64,39 @@ async function setup() {
   });
   resizeScreen();
 
-  try {
-    // Wait a moment to ensure p5.sound is loaded
-    await new Promise(resolve => setTimeout(resolve, 100));
+  // Create start button and place it on the right side
+  startButton = createButton('Start Audio');
+  startButton.parent("content");
+  startButton.position(canvasContainer.position().left + canvasContainer.width() - 120,
+                      canvasContainer.position().top + canvasContainer.height() + 20);
+  startButton.addClass('start-button');
+  startButton.mousePressed(initializeAudio);
 
-    // Request system audio stream using getDisplayMedia with more explicit options
+  // Create mute toggle button
+  audioOutputButton = createButton('Unmute Tab');
+  audioOutputButton.parent("content");
+  audioOutputButton.position(canvasContainer.position().left + canvasContainer.width() - 120,
+                           canvasContainer.position().top + canvasContainer.height() + 70);
+  audioOutputButton.addClass('start-button');
+  audioOutputButton.mousePressed(() => {
+    if (audioSource && audioContext) {
+      if (audioOutputButton.html() === 'Unmute Tab') {
+        audioSource.connect(audioContext.destination);
+        audioOutputButton.html('Mute Tab');
+      } else {
+        audioSource.disconnect(audioContext.destination);
+        audioOutputButton.html('Unmute Tab');
+      }
+    }
+  });
+
+  stroke(255);
+  background(0);
+  rectMode(CENTER);
+}
+
+async function initializeAudio() {
+  try {
     const stream = await navigator.mediaDevices.getDisplayMedia({
       audio: {
         echoCancellation: false,
@@ -80,20 +113,18 @@ async function setup() {
     fft = new p5.FFT();
     
     // Use p5.sound's audio context
-    const audioContext = p5.prototype.getAudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
+    audioContext = p5.prototype.getAudioContext();
+    audioSource = audioContext.createMediaStreamSource(stream);
     
-    // Just connect directly to the FFT
-    fft.setInput(source);
+    // Connect to FFT
+    fft.setInput(audioSource);
     audioReady = true;
+    
+    startButton.hide();
   } catch (err) {
     console.error('Error accessing audio:', err);
     audioReady = false;
   }
-
-  stroke(255);
-  background(0);
-  rectMode(CENTER);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
@@ -258,5 +289,20 @@ function draw() {
   } catch (err) {
     console.error('Error in draw loop:', err);
     audioReady = false;
+  }
+}
+
+// Add keyPressed function
+function keyPressed() {
+  if (key === ' ') { // Check for space key
+    if (audioSource && audioContext) {
+      if (audioOutputButton.html() === 'Unmute Tab') {
+        audioSource.connect(audioContext.destination);
+        audioOutputButton.html('Mute Tab');
+      } else {
+        audioSource.disconnect(audioContext.destination);
+        audioOutputButton.html('Unmute Tab');
+      }
+    }
   }
 }
