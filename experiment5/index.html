@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- This title is used for tabs and bookmarks -->
+	<title>Experiment 5</title>
+
+	<!-- Use UTF character set, a good idea with any webpage -->
+	<meta charset="UTF-8" />
+	<!-- Set viewport so page remains consistently scaled w narrow devices -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href="https://fonts.googleapis.com/css2?family=Love+Light&display=swap" rel="stylesheet">
+
+	<!-- Include CSS file, including a site-wide CSS and for this particular page -->
+	<link rel="stylesheet" type="text/css" href="../css/site.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+
+	<!-- Load jQuery library -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        crossorigin="anonymous"></script>
+	<!-- Load p5.js library -->
+	<script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
+
+	<!-- Link to javascript files - DEFER waits until all elements are rendered -->
+    <script type="text/javascript" src="../js/site.js" DEFER></script>
+	<!-- Use me for a JavaScript OOP Project -->
+	<script type="text/javascript" src="./js/project.js" DEFER></script>
+	<!-- Use me for a p5.js project -->
+	<script type="text/javascript" src="./js/sketch.js" DEFER></script>
+
+	<!-- Include Three.js library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ammo.js/2.0.0/ammo.js"></script>
+
+	<!-- Your CSS -->
+	<style>
+		body, html {
+			margin: 0;
+			padding: 0;
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+		}
+		
+		#canvas-container {
+			width: 100vw;
+			height: 100vh;
+			position: relative;
+			display: block;
+			margin: 0;
+			padding: 0;
+		}
+		
+		#canvas-container canvas {
+			width: 100vw !important;
+			height: 100vh !important;
+			display: block;
+		}
+		
+		/* When in fullscreen */
+		#canvas-container:fullscreen {
+			width: 100vw;
+			height: 100vh;
+		}
+		
+		/* Crosshair styles */
+		#crosshair {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			pointer-events: none;
+			z-index: 100;
+			width: 40px;  /* Total width */
+			height: 40px; /* Total height */
+		}
+		
+		/* Individual crosshair lines */
+		.crosshair-line {
+			position: absolute;
+			background: #ff00ff;
+		}
+		
+		/* Vertical line up */
+		.line-up {
+			width: 2px;
+			height: 15px;  /* Length of up line */
+			left: 50%;
+			top: 0;
+			transform: translateX(-50%);
+		}
+		
+		/* Vertical line down */
+		.line-down {
+			width: 2px;
+			height: 15px;  /* Length of down line */
+			left: 50%;
+			bottom: 0;
+			transform: translateX(-50%);
+		}
+		
+		/* Horizontal line left */
+		.line-left {
+			width: 15px;  /* Length of left line */
+			height: 2px;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+		}
+		
+		/* Horizontal line right */
+		.line-right {
+			width: 15px;  /* Length of right line */
+			height: 2px;
+			top: 50%;
+			right: 0;
+			transform: translateY(-50%);
+		}
+
+		/* Fullscreen button styles */
+		.fullscreen-button {
+			position: absolute;
+			bottom: 20px;
+			right: 20px;
+			padding: 10px 20px;
+			background: rgba(0, 0, 0, 0.5);
+			color: white;
+			border: 2px solid #ff00ff;
+			cursor: pointer;
+			z-index: 100;
+			font-family: Arial, sans-serif;
+			transition: background 0.3s;
+		}
+
+		.fullscreen-button:hover {
+			background: rgba(255, 0, 255, 0.3);
+		}
+	</style>
+</head>
+<body>
+	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
+	<main id="content">
+		<section>
+
+			<h1>Experiment 5 </h1>
+
+			<div class="minor-section">
+				<div id="canvas-container">
+					<div id="crosshair">
+						<div class="crosshair-line line-up"></div>
+						<div class="crosshair-line line-down"></div>
+						<div class="crosshair-line line-left"></div>
+						<div class="crosshair-line line-right"></div>
+					</div>
+					<button class="fullscreen-button" onclick="toggleFullscreen()">Fullscreen</button>
+				</div>
+			</div>
+
+			<div class="minor-section">
+				<h2>Description</h2>
+				<p>Click to see more patterns.</p>
+			</div>
+
+			<div class="minor-section">
+				<h2>Technical</h2>
+				<p>First I created my canvas with colors I  wanted.</p>
+			</div>
+
+			<div class="minor-section">
+				<h2>Reflection</h2>
+				<p>I'm sure theres a better way to recreate the golden ratio, and that my codes not perfect, but I'm really happy that I was able to complete this project.</p>
+			</div>
+
+		</section>
+		<nav id="links" class="minor-section">
+			<!-- Put link back to homepage here. -->
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+            </ul>
+		</nav>
+	</main>
+
+	<script>
+		function toggleFullscreen() {
+			if (!document.fullscreenElement) {
+				document.documentElement.requestFullscreen().catch(err => {
+					console.log(`Error attempting to enable fullscreen: ${err.message}`);
+				});
+			} else {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				}
+			}
+		}
+
+		// Update button text based on fullscreen state
+		document.addEventListener('fullscreenchange', () => {
+			const button = document.querySelector('.fullscreen-button');
+			button.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
+		});
+	</script>
+</body>
+</html>
