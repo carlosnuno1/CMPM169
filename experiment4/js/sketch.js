@@ -306,3 +306,38 @@ function keyPressed() {
     }
   }
 }
+
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const canvasContainer = document.getElementById('canvas-container');
+
+    fullscreenBtn.addEventListener('click', function() {
+        if (!document.fullscreenElement &&
+            !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement &&
+            !document.msFullscreenElement) {
+            // Request fullscreen
+            if (canvasContainer.requestFullscreen) {
+                canvasContainer.requestFullscreen();
+            } else if (canvasContainer.msRequestFullscreen) {
+                canvasContainer.msRequestFullscreen();
+            } else if (canvasContainer.mozRequestFullScreen) {
+                canvasContainer.mozRequestFullScreen();
+            } else if (canvasContainer.webkitRequestFullscreen) {
+                canvasContainer.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    });
+});

@@ -49,12 +49,20 @@ h1{
     border-radius: 10px;
     color: white;  /* Make text white for better contrast */
 }
-
-h2 {
-    color: #ff0000;  /* Match the red from your button */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);  /* Add subtle text shadow */
+/* Headings */
+h1 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
 }
 
+h2 {
+    color: #888;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Text styling */
 p {
-    line-height: 1.6;  /* Improve text readability */
+    line-height: 1.6;
+    color: #ccc;
 }
