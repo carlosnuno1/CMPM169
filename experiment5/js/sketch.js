@@ -51,7 +51,7 @@ const TARGET_HEIGHT_RANGE = { min: 5, max: 20 };  // Height range for targets
 let menuVisible = false;
 
 // Add to existing global variables
-let mouseSensitivity = 0.002;
+let mouseSensitivity = 0.001;
 
 // Add to existing global variables
 let gameStarted = false;
@@ -547,11 +547,14 @@ function onKeyUp(event) {
 
 function onMouseMove(event) {
     if (document.pointerLockElement === canvasContainer) {
+        // Use raw mouse movement values without any additional scaling
         euler.setFromQuaternion(camera.quaternion);
         
+        // Apply sensitivity directly to movement values
         euler.y -= event.movementX * mouseSensitivity;
         euler.x -= event.movementY * mouseSensitivity;
         
+        // Clamp vertical rotation to prevent over-rotation
         euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
         
         camera.quaternion.setFromEuler(euler);
